@@ -10,6 +10,7 @@ BEST_BEFORE="<!-- too_old -->\n> **この記事は最終更新から1年以上�
 desc "show all items"
 task :show do
   all_items = return_all_items
+  all_items.sort! { |a, b| a['since_last_update'] <=> b['since_last_update'] }
   # ["rendered_body", "body", "coediting", "created_at", "id", "private", "tags", "title", "updated_at", "url", "user"]
   # Formatador.display_table(all_items, ['created_at', 'updated_at', 'since_last_update', 'tagged', 'title', 'url'])
   Formatador.display_compact_table(all_items, ['created_at', 'updated_at', 'since_last_update', 'tagged', 'title', 'url'])
