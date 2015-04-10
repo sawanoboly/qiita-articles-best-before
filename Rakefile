@@ -4,6 +4,7 @@ require 'formatador'
 require 'logger'
 
 BEST_BEFORE="<!-- too_old -->\n> **この記事は最終更新から1年以上経過しています。** 気をつけてね。\n"
+PERMANENT="<!-- permanent -->\n"
 @client = Qiita::Client.new(access_token: ENV['QIITA_TOKEN'])
 @logger = Logger.new($stdout)
 
@@ -13,7 +14,7 @@ task :show do
   all_items.sort! { |a, b| a['since_last_update'] <=> b['since_last_update'] }
   # ["rendered_body", "body", "coediting", "created_at", "id", "private", "tags", "title", "updated_at", "url", "user"]
   # Formatador.display_table(all_items, ['created_at', 'updated_at', 'since_last_update', 'tagged', 'title', 'url'])
-  Formatador.display_compact_table(all_items, ['created_at', 'updated_at', 'since_last_update', 'tagged', 'title', 'url'])
+  Formatador.display_compact_table(all_items, ['created_at', 'since_last_update', 'tagged', 'permanent', 'id', 'title', 'url'])
 end
 
 ## PATCH
@@ -67,6 +68,7 @@ def return_all_items
   all_items.map do |i|
     i['since_last_update']  = ( (Time.now - Time.strptime(i['updated_at'], '%Y-%m-%dT%H:%M:%S')) / 60 / 60 / 24 ).to_i
     i['tagged'] = i['body'].start_with?(BEST_BEFORE)
+    i['permanent'] = i['body'].start_with?(PERMANENT)
     i
   end
 end
@@ -74,6 +76,7 @@ end
 def set_header_to_item(item)
   @logger.info item["id"] + ": " + item["since_last_update"].to_s + " days."
   return false if item["tagged"]
+  return false if item["permanent"]
   return false if item["since_last_update"] < 365
   item["body"] = BEST_BEFORE +  item["body"]
   item
