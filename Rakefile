@@ -14,7 +14,7 @@ task :show do
   all_items.sort! { |a, b| a['since_last_update'] <=> b['since_last_update'] }
   # ["rendered_body", "body", "coediting", "created_at", "id", "private", "tags", "title", "updated_at", "url", "user"]
   # Formatador.display_table(all_items, ['created_at', 'updated_at', 'since_last_update', 'tagged', 'title', 'url'])
-  Formatador.display_compact_table(all_items, ['created_at', 'since_last_update', 'tagged', 'permanent', 'id', 'title', 'url'])
+  Formatador.display_compact_table(all_items, ['created_at', 'since_last_update', 'tagged', 'permanent', 'id', 'title'])
 end
 
 ## PATCH
@@ -64,6 +64,12 @@ task :protect do |t, args|
   updater = set_header_to_item(current_item, PERMANENT, true)
   puts JSON.pretty_generate updater
   patch_header_to_item(updater)
+end
+
+desc "Open article with browser."
+task :open, :id
+task :open do |t, args|
+  system("open http://qiita.com/#{ENV['QIITA_USER']}/items/#{args['id']}")
 end
 
 def return_all_items
