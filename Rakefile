@@ -50,6 +50,22 @@ task :all do
   end
 end
 
+desc "Protect from expiring timeless article."
+task :protect, :id
+task :protect do |t, args|
+  exit unless args[:id]
+  item = @client.get_item(args[:id])
+  unless item.status == 200
+    @logger.warn "id: #{args[:id]} not found."
+  end
+  current_item = modify_item_to_edit(item.body)
+  exit if current_item['permanent']
+  @logger.info current_item["id"] + " will be protected."
+  updater = set_header_to_item(current_item, PERMANENT, true)
+  puts JSON.pretty_generate updater
+  patch_header_to_item(updater)
+end
+
 def return_all_items
   all_items = []
   page = 1
@@ -65,21 +81,27 @@ def return_all_items
   all_items.concat(items.body)
 
   # Time.strptime('2015-04-03T15:38:50+09:00', '%Y-%m-%dT%H:%M:%S')
-  all_items.map do |i|
-    i['since_last_update']  = ( (Time.now - Time.strptime(i['updated_at'], '%Y-%m-%dT%H:%M:%S')) / 60 / 60 / 24 ).to_i
-    i['tagged'] = i['body'].start_with?(BEST_BEFORE)
-    i['permanent'] = i['body'].start_with?(PERMANENT)
-    i
+  all_items.map do |item|
+    modify_item_to_edit(item)
   end
 end
 
-def set_header_to_item(item)
+def set_header_to_item(item, head = BEST_BEFORE, ignore_last_update = false)
   @logger.info item["id"] + ": " + item["since_last_update"].to_s + " days."
   return false if item["tagged"]
   return false if item["permanent"]
-  return false if item["since_last_update"] < 365
-  item["body"] = BEST_BEFORE +  item["body"]
+  unless ignore_last_update
+    return false if item["since_last_update"] < 365
+  end
+  item["body"] = head +  item["body"]
   item
+end
+
+def modify_item_to_edit(i)
+  i['since_last_update']  = ( (Time.now - Time.strptime(i['updated_at'], '%Y-%m-%dT%H:%M:%S')) / 60 / 60 / 24 ).to_i
+  i['tagged'] = i['body'].start_with?(BEST_BEFORE)
+  i['permanent'] = i['body'].start_with?(PERMANENT)
+  i
 end
 
 def patch_header_to_item(item)
