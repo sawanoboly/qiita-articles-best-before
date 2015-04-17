@@ -1,3 +1,11 @@
+GIT
+  remote: git://github.com/higanworks/formatador.git
+  revision: 57bf97f10ff6221aeb893d45cfa7ae54ab27c1a8
+  ref: fix_table_format_inclueds_multibite
+  specs:
+    formatador (0.2.5)
+      unicode
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -12,7 +20,6 @@ GEM
       multipart-post (>= 1.2, < 3)
     faraday_middleware (0.9.1)
       faraday (>= 0.7.4, < 0.10)
-    formatador (0.2.5)
     i18n (0.7.0)
     json (1.8.2)
     method_source (0.8.2)
@@ -41,13 +48,14 @@ GEM
     thread_safe (0.3.5)
     tzinfo (1.2.2)
       thread_safe (~> 0.1)
+    unicode (0.4.4.2)
     yard (0.8.7.6)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
-  formatador
+  formatador!
   pry
   pry-doc
   qiita
