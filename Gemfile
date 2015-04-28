@@ -3,7 +3,8 @@ source "https://rubygems.org"
 
 gem 'qiita'
 gem 'rake'
-gem 'formatador', github: 'higanworks/formatador', ref: 'fix_table_format_inclueds_multibite'
+gem 'formatador', github: 'geemus/formatador'
+gem 'unicode'
 
 group :development do
   gem 'pry'

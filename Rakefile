@@ -2,6 +2,8 @@
 require 'qiita'
 require 'formatador'
 require 'logger'
+require 'unicode'
+OpenSSL::SSL::VERIFY_PEER = OpenSSL::SSL::VERIFY_NONE
 
 BEST_BEFORE="<!-- too_old -->\n> **この記事は最終更新から1年以上経過しています。** 気をつけてね。\n"
 PERMANENT="<!-- permanent -->\n"

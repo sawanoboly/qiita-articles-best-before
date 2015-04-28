@@ -1,10 +1,8 @@
 GIT
-  remote: git://github.com/higanworks/formatador.git
-  revision: 57bf97f10ff6221aeb893d45cfa7ae54ab27c1a8
-  ref: fix_table_format_inclueds_multibite
+  remote: git://github.com/geemus/formatador.git
+  revision: 5562f5823990fe4605bc4fda4b9235d7192b135a
   specs:
     formatador (0.2.5)
-      unicode
 
 GEM
   remote: https://rubygems.org/
@@ -60,3 +58,4 @@ DEPENDENCIES
   pry-doc
   qiita
   rake
+  unicode
